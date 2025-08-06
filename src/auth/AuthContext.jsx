@@ -75,7 +75,6 @@ export const AuthProvider = ({ children }) => {
     //Helper function to get token and use for future authenticated fetch calls
 const getToken = () => {
     const token = localStorage.getItem("token");
-    console.log("Retrieved token in getToken:", token); //debugging
     return token;
 };
 
