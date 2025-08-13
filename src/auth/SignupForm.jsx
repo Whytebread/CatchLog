@@ -1,6 +1,7 @@
 import { useState, useContext } from 'react';
 import { AuthContext } from "../auth/AuthContext";
 import { useNavigate } from 'react-router-dom';
+import { validateUser } from "../utils/validate";
 
 
 
@@ -19,11 +20,17 @@ const Signup = () => {
     e.preventDefault();
     setError("");
 
+    const validationError = validateUser(form);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
     try {
       await signup(form.email, form.password);
-      navigate("/"); 
+      navigate("/");
     } catch (err) {
-      setError("Signup failed");
+      setError(err?.response?.data?.message || "Signup failed");
     }
   };
 

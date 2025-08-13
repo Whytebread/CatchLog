@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import TripForm from '../Components/TripForm.jsx';
 import useAuth from "../hooks/useAuth";
+import { validateTrip } from "../utils/validate";
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5002';
 
@@ -11,10 +12,15 @@ function AddTrip({ onSave, onEdit }) {
     const initialData = location.state?.initialData;
 
     const { getToken } = useAuth();
-    
+
 
     const handleTripSubmit = async (tripData) => {
         try {
+            const validationError = validateTrip(tripData);
+            if (validationError) {
+                alert(validationError);
+                return;
+            }
             const token = getToken();
             const url = initialData
                 ? `${API_BASE_URL}/api/trips/${initialData._id}`
@@ -32,15 +38,14 @@ function AddTrip({ onSave, onEdit }) {
             });
 
             if (!res.ok) {
-                const errorText = await res.text(); //debugging
-                console.error("Trip creation error response:", errorText); //debugging
-                throw new Error(`Trip ${initialData ? 'update' : 'creation'} failed`);
+                const errorData = await res.json().catch(() => null);
+                throw new Error(errorData?.message || `Trip ${initialData ? "update" : "creation"} failed`);
             }
 
             navigate('/');
         } catch (err) {
             console.error("Trip submit error:", err);
-            alert("There was an error saving your trip.");
+            alert(err.message || "There was an error saving your trip.");
         }
     };
 

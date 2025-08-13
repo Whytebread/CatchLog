@@ -48,6 +48,11 @@ const getTripById = async (req, res) => {
 
 // Update trip
 const updateTrip = async (req, res) => {
+
+    const error = validateTrip(req.body);
+    if (error) {
+        return res.status(400).json({ error });
+    }
     try {
         const updatedTrip = await Trip.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!updatedTrip) return res.status(404).json({ msg: 'Trip not found' });

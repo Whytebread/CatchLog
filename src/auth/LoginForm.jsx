@@ -1,6 +1,7 @@
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../auth/AuthContext';
+import { validateUser } from "../utils/validate";
 
 
 const Login = () => {
@@ -18,11 +19,21 @@ const Login = () => {
     e.preventDefault();
     setError("");
 
+    const validationError = validateUser({
+      email: form.email,
+      password: form.password
+    });
+
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
     try {
       await login(form.email, form.password);
-      navigate("/"); 
+      navigate("/");
     } catch (err) {
-      setError("Invalid email or password");
+      setError(err.message || "Login failed");
     }
   };
 
