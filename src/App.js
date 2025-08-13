@@ -5,6 +5,7 @@ import AddTrip from "./Pages/AddTrip";
 import LoginForm from './auth/LoginForm';
 import SignupForm from './auth/SignupForm';
 import NavBar from "./Components/NavBar";
+import ProtectedRoute from "./auth/ProtectedRoute";
 import './App.css';
 import { useAuth } from './auth/AuthContext';
 
@@ -47,16 +48,37 @@ function App() {
   };
 
   return (
-      <Router>
-        <NavBar />
-        <Routes>
-          <Route path="/" element={<Dashboard trips={trips} setTrips={setTrips} />} />
-          <Route path="/add" element={<AddTrip onSave={handleTripSave} />} />
-          <Route path="/edit" element={<AddTrip onEdit={handleTripEdit} />} />
-          <Route path="/login" element={<LoginForm />} />
-          <Route path="/signup" element={<SignupForm />} />
-        </Routes>
-      </Router>
+    <Router>
+      <NavBar />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Dashboard trips={trips} setTrips={setTrips} />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/add"
+          element={
+            <ProtectedRoute>
+              <AddTrip onSave={handleTripSave} />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/edit"
+          element={
+            <ProtectedRoute>
+              <AddTrip onEdit={handleTripEdit} />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/signup" element={<SignupForm />} />
+      </Routes>
+    </Router>
   );
 }
 
