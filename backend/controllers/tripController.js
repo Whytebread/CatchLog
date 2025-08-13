@@ -1,4 +1,5 @@
 const Trip = require("../models/Trip");
+const { validateTrip } = require('../middleware/validate');
 
 // Get all trips
 const getTrips = async (req, res) => {
@@ -12,6 +13,12 @@ const getTrips = async (req, res) => {
 
 // Create a new trip
 const createTrip = async (req, res) => {
+
+    const error = validateTrip(req.body);
+    if (error) {
+        return res.status(400).json({ error });
+    }
+
     try {
         if (!req.body.catches || req.body.catches.length === 0 || !req.body.catches[0].species) {
             return res.status(400).json({ msg: 'At least one catch with species is required' });
