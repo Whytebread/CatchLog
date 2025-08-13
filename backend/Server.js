@@ -1,3 +1,5 @@
+import errorHandler from './middleware/errorHandler.js';
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -5,6 +7,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const requireAuth = require('./middleware/requireAuth');
+
 
 
 const app = express();
@@ -58,6 +61,10 @@ app.get('/', (req, res) => {
         ]
     });
 });
+
+// error handler
+app.use(errorHandler);
+
 
 const PORT = process.env.PORT || 5002;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
