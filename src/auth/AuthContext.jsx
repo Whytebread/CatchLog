@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }) => {
         return storedUser ? JSON.parse(storedUser) : null;
     });
 
+    const isAuthenticated = !!user;
 
     // Load user from localStorage when app starts
     useEffect(() => {
@@ -62,7 +63,7 @@ export const AuthProvider = ({ children }) => {
                 throw new Error(data.message || "Signup failed");
             }
 
-            
+
             setUser(data.user);
             localStorage.setItem('user', JSON.stringify(data.user));
             localStorage.setItem('token', data.token);
@@ -73,10 +74,10 @@ export const AuthProvider = ({ children }) => {
     };
 
     //Helper function to get token and use for future authenticated fetch calls
-const getToken = () => {
-    const token = localStorage.getItem("token");
-    return token;
-};
+    const getToken = () => {
+        const token = localStorage.getItem("token");
+        return token;
+    };
 
 
     //Clears user from memory and localstorage
@@ -87,11 +88,21 @@ const getToken = () => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, signup, logout, getToken }}>
+        <AuthContext.Provider
+            value={{
+                user,
+                isAuthenticated,
+                login,
+                signup,
+                logout,
+                getToken
+            }}
+        >
             {children}
         </AuthContext.Provider>
     );
 };
+
 
 export function useAuth() {
     return useContext(AuthContext);
