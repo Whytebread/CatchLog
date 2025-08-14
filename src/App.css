@@ -153,3 +153,13 @@
 .auth-form .link-text a:hover {
   text-decoration: underline;
 }
+
+/* toast styling */
+.Toastify__toast--success {
+  background-color: #1a3d2f;
+  color: white;
+}
+.Toastify__toast--error {
+  background-color: #8b1e1e;
+  color: white;
+}

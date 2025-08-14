@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
+import { toast } from "react-toastify";
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5002';
 
@@ -41,9 +42,10 @@ export const AuthProvider = ({ children }) => {
             setUser(data.user);
             localStorage.setItem('user', JSON.stringify(data.user));
             localStorage.setItem('token', data.token);
+
+            toast.success(`Welcome back, ${data.user.email}!`);
         } catch (error) {
-            console.error(error);
-            throw error;
+            toast.error(error.message || 'An error occurred');
         }
     };
 

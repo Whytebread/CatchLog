@@ -8,6 +8,8 @@ import NavBar from "./Components/NavBar";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import './App.css';
 import { useAuth } from './auth/AuthContext';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const [trips, setTrips] = useState([]);
@@ -50,6 +52,16 @@ function App() {
   return (
     <Router>
       <NavBar />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <Routes>
         <Route
           path="/"
