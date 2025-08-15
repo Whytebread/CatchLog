@@ -3,6 +3,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import TripForm from '../Components/TripForm.jsx';
 import useAuth from "../hooks/useAuth";
 import { validateTrip } from "../utils/validate";
+import { toast } from "react-toastify";
+
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5002';
 
@@ -18,10 +20,16 @@ function AddTrip({ onSave, onEdit }) {
         try {
             const validationError = validateTrip(tripData);
             if (validationError) {
-                alert(validationError);
+                toast.warn(validationError);
                 return;
             }
             const token = getToken();
+            if (!token) {
+                toast.error("You must be logged in to save a trip.");
+                navigate("/login");
+                return;
+            }
+
             const url = initialData
                 ? `${API_BASE_URL}/api/trips/${initialData._id}`
                 : `${API_BASE_URL}/api/trips`;
@@ -42,10 +50,12 @@ function AddTrip({ onSave, onEdit }) {
                 throw new Error(errorData?.message || `Trip ${initialData ? "update" : "creation"} failed`);
             }
 
+            toast.success(initialData ? "Trip updated successfully!" : "Trip created successfully!");
+
             navigate('/');
         } catch (err) {
             console.error("Trip submit error:", err);
-            alert(err.message || "There was an error saving your trip.");
+            toast.error(err.message || "There was an error saving your trip.");
         }
     };
 

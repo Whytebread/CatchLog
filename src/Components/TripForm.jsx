@@ -3,12 +3,11 @@ import CatchEntry from '../Components/CatchEntry.jsx';
 import { Link } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../auth/AuthContext.jsx';
+import { toast } from "react-toastify";
 
 
 
 // *******IMPROVEMENTS/CHANGES******//
-// either need to only have the catch delete button show if there is more than one catch entered or to not allow the delete if there is only one catch
-// if no catch information is entered either display no catches or make it required, or a prompt that confirms no fish caught
 
 
 
@@ -27,6 +26,9 @@ function TripForm({ onSubmit, initialData = null }) {
         catches: initialData?.catches || [],
     });
 
+    const [error, setError] = useState("");
+
+    // input handlers
 
     // records the values submitted in the input fields
     const handleInputChange = (e) => {
@@ -55,10 +57,27 @@ function TripForm({ onSubmit, initialData = null }) {
         setFormData({ ...formData, catches: newCatches });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        onSubmit(formData); // sends all the data to AddTrip (or EditTrip)
-    };
+    setError("");
+
+    // Basic validation
+    if (!formData.title || !formData.location || !formData.date) {
+      const message = "Please fill out all required fields.";
+      setError(message);
+      toast.error(message);
+      return;
+    }
+
+    try {
+      await onSubmit({ ...formData, userId: user._id });
+      toast.success("Trip saved successfully!");
+    } catch (err) {
+      const message = err.message || "Failed to save trip.";
+      setError(message);
+      toast.error(message);
+    }
+  };
 
 
     return (

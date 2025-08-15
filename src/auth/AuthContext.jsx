@@ -35,15 +35,16 @@ export const AuthProvider = ({ children }) => {
             });
 
             if (!res.ok) {
-                throw new Error('Login failed');
+                const errorData = await res.json().catch(() => null);
+                throw new Error(errorData?.message || "Login failed");
             }
 
             const data = await res.json();
             setUser(data.user);
             localStorage.setItem('user', JSON.stringify(data.user));
             localStorage.setItem('token', data.token);
-
             toast.success(`Welcome back, ${data.user.email}!`);
+            return data;
         } catch (error) {
             toast.error(error.message || 'An error occurred');
         }
@@ -69,9 +70,12 @@ export const AuthProvider = ({ children }) => {
             setUser(data.user);
             localStorage.setItem('user', JSON.stringify(data.user));
             localStorage.setItem('token', data.token);
+            toast.success("Account created successfully!");
+            return true;
         } catch (error) {
-            console.error(error);
-            throw error;
+            console.error("Signup error:", error);
+            toast.error(error.message || "Signup failed");
+            return false;
         }
     };
 
@@ -87,6 +91,7 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
         localStorage.removeItem("user");
         localStorage.removeItem("token");
+        toast.info("Logged out");
     };
 
     return (

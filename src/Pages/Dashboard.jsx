@@ -4,13 +4,11 @@ import TripCard from '../Components/TripCard';
 import Modal from '../Components/Modal';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
-
-
+import { toast } from "react-toastify";
 
 // ********IMPROVEMENTS/CHANGES*********//
 // expandable catches
 // weather api
-// user login
 // fish picture
 
 function Dashboard({ trips, setTrips }) {
@@ -40,12 +38,15 @@ function Dashboard({ trips, setTrips }) {
         //prevents a crash when a new user signs up and will return and empty array because there are no trips yet to fetch
         if (Array.isArray(data)) {
           setTrips(data);
+          toast.success("Trips loaded successfully");
         } else {
           console.log("Expected an array, got:", data);
           setTrips([]); 
+          toast.info("No trips found. Add your first trip!");
         }
       })
       .catch(err => console.error('Error fetching trips:', err));
+      toast.error("Error fetching trips");
   }, [getToken, setTrips, navigate]);
 
   // shows the modal to confirm delete when delete button is clicked
@@ -66,10 +67,12 @@ function Dashboard({ trips, setTrips }) {
       .then(res => {
         if (!res.ok) throw new Error("Delete failed");
         setTrips(prevTrips => prevTrips.filter(t => t !== tripToDelete));
+        toast.success("Trip deleted successfully");
         setTripToDelete(null);
         setShowModal(false);
       })
       .catch(err => console.log("Error deleting trip", err))
+      toast.error("Error deleting trip");
     setShowModal(false)
   };
 

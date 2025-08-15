@@ -2,6 +2,7 @@ import { useState, useContext } from 'react';
 import { AuthContext } from "../auth/AuthContext";
 import { useNavigate } from 'react-router-dom';
 import { validateUser } from "../utils/validate";
+import { toast } from "react-toastify";
 
 
 
@@ -23,14 +24,17 @@ const Signup = () => {
     const validationError = validateUser(form);
     if (validationError) {
       setError(validationError);
+      toast.error(validationError);
       return;
     }
 
     try {
-      await signup(form.email, form.password);
+      const data = await signup(form.name, form.email, form.password);
+      toast.success(`Account created! Welcome, ${data.user.name}!`);
       navigate("/");
     } catch (err) {
       setError(err?.response?.data?.message || "Signup failed");
+      toast.error(err.message || "Unable to register. Please try again.");
     }
   };
 

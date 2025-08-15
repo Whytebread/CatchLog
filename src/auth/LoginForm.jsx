@@ -2,6 +2,7 @@ import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../auth/AuthContext';
 import { validateUser } from "../utils/validate";
+import { toast } from "react-toastify";
 
 
 const Login = () => {
@@ -30,10 +31,12 @@ const Login = () => {
     }
 
     try {
-      await login(form.email, form.password);
+      const data = await login(form.email, form.password);
+      toast.success(`Welcome back, ${data.user.name}!`);
       navigate("/");
     } catch (err) {
       setError(err.message || "Login failed");
+      toast.error(err.message || "Unable to log in. Please try again.");
     }
   };
 
